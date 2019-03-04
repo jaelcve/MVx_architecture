@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.techyourchance.mvc.R;
 import com.techyourchance.mvc.questions.Question;
 
+import org.w3c.dom.Text;
+
 public class QuestionsListAdapter extends ArrayAdapter<Question> {
 
     private final OnQuestionClickListener mOnQuestionClickListener;
@@ -26,19 +28,26 @@ public class QuestionsListAdapter extends ArrayAdapter<Question> {
         mOnQuestionClickListener = onQuestionClickListener;
     }
 
+    private static class ViewHolder{
+        private TextView mTitle;
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.layout_question_list_item, parent, false);
+            ViewHolder viewHolder = new ViewHolder();
+            viewHolder.mTitle = convertView.findViewById(R.id.txt_title);
+            convertView.setTag(viewHolder);
         }
 
         final Question question = getItem(position);
 
         // bind the data to views
-        TextView txtTitle = convertView.findViewById(R.id.txt_title);
-        txtTitle.setText(question.getTitle());
+        ViewHolder viewHolder = (ViewHolder) convertView.getTag();
+        viewHolder.mTitle.setText(question.getTitle());
 
         // set listener
         convertView.setOnClickListener(new View.OnClickListener() {
