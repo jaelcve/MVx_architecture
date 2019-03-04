@@ -4,20 +4,18 @@ import android.view.View;
 
 import com.techyourchance.mvc.questions.Question;
 
-import java.util.List;
+public interface QuestionListItemViewMvc {
 
-interface QuestionListViewMvc {
-
-    interface Listener{
+    interface Listener {
         void onQuestionClicked(Question question);
     }
+
+    View getRootView();
 
     void registerListener(Listener listener);
 
     void unRegisterListener(Listener listener);
 
-    View getRootView();
-
-    void bindQuestions(List<Question> question);
+    void bindQuestion(Question question);
 
 }

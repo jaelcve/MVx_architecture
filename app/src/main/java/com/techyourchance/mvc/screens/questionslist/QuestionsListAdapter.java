@@ -14,7 +14,7 @@ import com.techyourchance.mvc.questions.Question;
 
 import org.w3c.dom.Text;
 
-public class QuestionsListAdapter extends ArrayAdapter<Question> {
+public class QuestionsListAdapter extends ArrayAdapter<Question> implements QuestionListItemViewMvc.Listener{
 
     private final OnQuestionClickListener mOnQuestionClickListener;
 
@@ -36,19 +36,18 @@ public class QuestionsListAdapter extends ArrayAdapter<Question> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.layout_question_list_item, parent, false);
-            ViewHolder viewHolder = new ViewHolder();
-            viewHolder.mTitle = convertView.findViewById(R.id.txt_title);
-            convertView.setTag(viewHolder);
+            QuestionListItemViewMvc viewMvc = new QuestionListItemViewMvcImp(
+                    LayoutInflater.from(getContext()), parent);
+            viewMvc.registerListener(this);
+            convertView = viewMvc.getRootView();
+            convertView.setTag(viewMvc);
         }
 
         final Question question = getItem(position);
 
         // bind the data to views
-        ViewHolder viewHolder = (ViewHolder) convertView.getTag();
-        viewHolder.mTitle.setText(question.getTitle());
-
+        QuestionListItemViewMvc viewMvc = (QuestionListItemViewMvc) convertView.getTag();
+        viewMvc.bindQuestion(question);
         // set listener
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +59,8 @@ public class QuestionsListAdapter extends ArrayAdapter<Question> {
         return convertView;
     }
 
-    private void onQuestionClicked(Question question) {
+        @Override
+        public void onQuestionClicked(Question question) {
         mOnQuestionClickListener.onQuestionClicked(question);
     }
 }
